@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+backend/venv/
+.venv/
+env/
+ENV/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# PyTorch / MedMNIST data cache
+*.pt
+*.pth
+*.npz
+.medmnist/
+~/.medmnist/
+
+# Node / Web
+node_modules/
+.next/
+out/
+
+# Environment and secrets
+.env
+.env*.local
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
