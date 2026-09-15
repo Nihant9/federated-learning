@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedShield AI | Federated Pneumonia Diagnostics & Poisoning Defense</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0a0e17;
+            --bg-card: rgba(18, 24, 38, 0.75);
+            --bg-card-hover: rgba(26, 35, 54, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(56, 189, 248, 0.3);
+            --accent-primary: #38bdf8;
+            --accent-primary-glow: rgba(56, 189, 248, 0.25);
+            --accent-emerald: #10b981;
+            --accent-emerald-glow: rgba(16, 185, 129, 0.25);
+            --accent-rose: #f43f5e;
+            --accent-rose-glow: rgba(244, 63, 94, 0.25);
+            --accent-amber: #f59e0b;
+            --accent-violet: #8b5cf6;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel:hover {
+            border-color: var(--border-glow);
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(20px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-violet));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--accent-primary-glow);
+        }
+
+        .brand-logo svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .brand-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .telemetry-badges {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            box-shadow: 0 0 8px var(--accent-emerald);
+            animation: pulse 2s infinite;
+        }
+
+        .badge-accent {
+            color: var(--accent-primary);
+            border-color: rgba(56, 189, 248, 0.3);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Navigation Tabs */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 12px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .tab-btn.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Diagnostic Lab Grid */
+        .diagnostic-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 960px) {
+            .diagnostic-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Upload Area */
+        .upload-section {
+            padding: 2rem;
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .section-header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .dropzone {
+            border: 2px dashed rgba(56, 189, 248, 0.3);
+            border-radius: 14px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(15, 23, 42, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(56, 189, 248, 0.06);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.15);
+        }
+
+        .dropzone-icon {
+            width: 54px;
+            height: 54px;
+            margin: 0 auto 1rem;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+        }
+
+        .dropzone h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .dropzone p {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .preset-samples {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .preset-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .sample-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-sample {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-sample:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn-normal:hover {
+            border-color: var(--accent-emerald);
+            color: var(--accent-emerald);
+        }
+
+        .btn-pneumonia:hover {
+            border-color: var(--accent-rose);
+            color: var(--accent-rose);
+        }
+
+        /* Preview & Results Panel */
+        .results-section {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .image-viewer {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background: #000000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-viewer img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .viewer-placeholder {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .overlay-toggle-bar {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            display: flex;
+            gap: 6px;
+            background: rgba(10, 14, 23, 0.85);
+            padding: 4px;
+            border-radius: 8px;
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-glass);
+        }
+
+        .overlay-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .overlay-btn.active {
+            background: var(--accent-primary);
+            color: #000;
+        }
+
+        /* Diagnosis Card */
+        .diagnosis-card {
+            border-radius: 14px;
+            padding: 1.5rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .diagnosis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .verdict-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .tag-normal {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-emerald);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 15px var(--accent-emerald-glow);
+        }
+
+        .tag-pneumonia {
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--accent-rose);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            box-shadow: 0 0 15px var(--accent-rose-glow);
+        }
+
+        .confidence-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .progress-bar-bg {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fill-pneumonia {
+            background: linear-gradient(90deg, #f59e0b, #f43f5e);
+        }
+
+        .fill-normal {
+            background: linear-gradient(90deg, #06b6d4, #10b981);
+        }
+
+        .probabilities-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .clinical-box {
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--accent-primary);
+            font-size: 0.8rem;
+            color: var(--text-main);
+        }
+
+        /* Poison Scanner Tab */
+        .poison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 960px) {
+            .poison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .scanner-card {
+            padding: 2rem;
+        }
+
+        .audit-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f59e0b, #f43f5e);
+            border: none;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(244, 63, 94, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .audit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(244, 63, 94, 0.45);
+        }
+
+        .audit-results-box {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .metric-pill-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .metric-pill {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-glass);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .metric-pill-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .metric-pill-lbl {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .table-container {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text-muted);
+            position: sticky;
+            top: 0;
+        }
+
+        /* Network Tab */
+        .network-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .node-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .node-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-dot-active {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            box-shadow: 0 0 10px var(--accent-emerald);
+        }
+
+        .status-dot-blocked {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-rose);
+            box-shadow: 0 0 10px var(--accent-rose);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.9); }
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="brand">
+                <div class="brand-logo">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+                </div>
+                <div class="brand-text">
+                    <h1>MedShield AI</h1>
+                    <p>Federated Pneumonia Diagnostic Engine & Byzantine Poison Defense</p>
+                </div>
+            </div>
+            <div class="telemetry-badges">
+                <div class="badge badge-accent">
+                    <div class="badge-dot"></div>
+                    <span id="modelAccBadge">Test Accuracy: 93.6%</span>
+                </div>
+                <div class="badge">
+                    <span style="color: var(--accent-emerald);">●</span>
+                    <span>Byzantine Defense: Armed</span>
+                </div>
+                <div class="badge">
+                    <span>5 Hospital Nodes</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('lab')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                X-Ray Diagnostic Lab
+            </button>
+            <button class="tab-btn" onclick="switchTab('poison')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Dataset Poisoning & Tamper Scanner
+            </button>
+            <button class="tab-btn" onclick="switchTab('network')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><circle cx="5" cy="19" r="2"/><line x1="7" y1="6.5" x2="10" y2="10.5"/><line x1="17" y1="6.5" x2="14" y2="10.5"/><line x1="7" y1="17.5" x2="10" y2="13.5"/><line x1="17" y1="17.5" x2="14" y2="13.5"/></svg>
+                Federated Hospital Network
+            </button>
+        </nav>
+
+        <!-- TAB 1: Diagnostic Lab -->
+        <section id="tab-lab" class="tab-content active">
+            <div class="diagnostic-grid">
+                <!-- Upload Column -->
+                <div class="glass-panel upload-section">
+                    <div class="section-header">
+                        <h2>Chest Radiograph Ingestion</h2>
+                        <p>Upload a patient chest X-ray (DICOM/PNG/JPG) for instant deep CNN inference.</p>
+                    </div>
+
+                    <div id="dropzone" class="dropzone" onclick="document.getElementById('fileInput').click()">
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                        <div class="dropzone-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        </div>
+                        <h3>Click to upload or drag and drop</h3>
+                        <p>Grayscale or RGB chest radiographs supported</p>
+                    </div>
+
+                    <!-- Preset Samples for instant testing -->
+                    <div class="preset-samples">
+                        <div class="preset-title">Or Test With Verified Clinical Samples:</div>
+                        <div class="sample-buttons">
+                            <button class="btn-sample btn-normal" onclick="loadSample('normal')">
+                                <span style="color: var(--accent-emerald)">●</span> Load Normal Lung
+                            </button>
+                            <button class="btn-sample btn-pneumonia" onclick="loadSample('pneumonia')">
+                                <span style="color: var(--accent-rose)">●</span> Load Pneumonia Infiltrate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Column -->
+                <div class="glass-panel results-section">
+                    <div class="section-header">
+                        <h2>Diagnostic Assessment</h2>
+                        <p>Confidence quantification and region of interest activation map.</p>
+                    </div>
+
+                    <!-- Viewer -->
+                    <div class="image-viewer">
+                        <div id="viewerPlaceholder" class="viewer-placeholder">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>
+                            <span>Awaiting Radiograph Upload</span>
+                        </div>
+                        <img id="mainImage" style="display: none;" alt="Patient Radiograph">
+                        <div id="overlayToggleBar" class="overlay-toggle-bar" style="display: none;">
+                            <button id="btnRaw" class="overlay-btn active" onclick="toggleOverlay('raw')">Raw X-Ray</button>
+                            <button id="btnHeatmap" class="overlay-btn" onclick="toggleOverlay('heatmap')">Saliency Map</button>
+                        </div>
+                    </div>
+
+                    <!-- Diagnosis Card -->
+                    <div class="diagnosis-card">
+                        <div class="diagnosis-header">
+                            <div>
+                                <span id="verdictTag" class="verdict-tag tag-normal">AWAITING INGESTION</span>
+                            </div>
+                            <div class="confidence-number" id="confidenceValue">--%</div>
+                        </div>
+
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-bg">
+                                <div id="progressFill" class="progress-bar-fill fill-normal" style="width: 0%;"></div>
+                            </div>
+                            <div class="probabilities-labels">
+                                <span id="probNormalText">Normal: --%</span>
+                                <span id="probPneumoniaText">Pneumonia: --%</span>
+                            </div>
+                        </div>
+
+                        <div id="clinicalBox" class="clinical-box">
+                            Upload a chest X-ray image or click one of the clinical samples to initiate deep learning inference.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: Poison Scanner -->
+        <section id="tab-poison" class="tab-content">
+            <div class="poison-grid">
+                <div class="glass-panel scanner-card">
+                    <div class="section-header">
+                        <h2>Adversarial Poisoning Verifier</h2>
+                        <p>Detect label-flipping attacks and sample corruption by comparing declared metadata with deep latent feature representations.</p>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 1rem;">
+                        <label style="font-size: 0.8rem; color: var(--text-muted);">Declared Label for Test Upload:</label>
+                        <select id="declaredLabelSelect" style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-glass); color: white; padding: 10px; border-radius: 8px;">
+                            <option value="Normal">Declared as: Normal Lung (Class 0)</option>
+                            <option value="Pneumonia">Declared as: Pneumonia Infiltrate (Class 1)</option>
+                        </select>
+
+                        <div class="dropzone" onclick="document.getElementById('poisonFileInput').click()" style="padding: 1.5rem;">
+                            <input type="file" id="poisonFileInput" accept="image/*" style="display: none;" onchange="handlePoisonFile(event)">
+                            <div class="dropzone-icon" style="color: var(--accent-amber); background: rgba(245, 158, 11, 0.1);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            </div>
+                            <h3>Upload Suspicious Sample</h3>
+                            <p>Verify if image latent structure contradicts declared label</p>
+                        </div>
+                    </div>
+
+                    <div id="singlePoisonResult" style="display: none; margin-top: 1.5rem;" class="clinical-box"></div>
+                </div>
+
+                <div class="glass-panel scanner-card">
+                    <div class="section-header">
+                        <h2>Live Federated Poisoning Benchmark</h2>
+                        <p>Simulate an adversarial attack where a malicious client injects label-flipped medical images into the dataset.</p>
+                    </div>
+
+                    <button id="btnRunBenchmark" class="audit-btn" onclick="runPoisonBenchmark()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                        Run Live Dataset Poison Audit
+                    </button>
+
+                    <div id="benchmarkLoading" style="display: none; text-align: center; margin-top: 1.5rem;">
+                        <div class="spinner" style="margin: 0 auto 10px;"></div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Auditing dataset latent embeddings and loss residuals...</span>
+                    </div>
+
+                    <div id="benchmarkResults" class="audit-results-box" style="display: none;">
+                        <div class="metric-pill-row">
+                            <div class="metric-pill">
+                                <div class="metric-pill-val" id="statInspected">60</div>
+                                <div class="metric-pill-lbl">Inspected</div>
+                            </div>
+                            <div class="metric-pill">
+                                <div class="metric-pill-val" id="statPoisoned" style="color: var(--accent-rose);">12</div>
+                                <div class="metric-pill-lbl">Poison Flagged</div>
+                            </div>
+                            <div class="metric-pill">
+                                <div class="metric-pill-val" id="statAccuracy" style="color: var(--accent-emerald);">95%</div>
+                                <div class="metric-pill-lbl">Defense Acc</div>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Idx</th>
+                                        <th>Declared</th>
+                                        <th>True Identity</th>
+                                        <th>Confidence</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="flaggedTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: Network Monitor -->
+        <section id="tab-network" class="tab-content">
+            <div class="section-header" style="margin-bottom: 2rem;">
+                <h2>Federated Healthcare Consortium Nodes</h2>
+                <p>Real-time topology of 5 participating hospital clients with Byzantine consensus defenses.</p>
+            </div>
+
+            <div class="network-grid">
+                <div class="glass-panel node-card">
+                    <div class="node-status">
+                        <span style="font-weight: 700;">Hospital Alpha</span>
+                        <div class="status-dot-active"></div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 0 • 942 Radiographs</p>
+                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-emerald);">
+                        Status: HONEST<br>Consensus Sim: +0.942
+                    </div>
+                </div>
+
+                <div class="glass-panel node-card" style="border-color: rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.05);">
+                    <div class="node-status">
+                        <span style="font-weight: 700; color: var(--accent-rose);">Hospital Beta (Adversary)</span>
+                        <div class="status-dot-blocked"></div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 1 • Malicious Node</p>
+                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-rose);">
+                        Status: BLOCKED &amp; SLASHED<br>Consensus Sim: -0.814 (Poisoned)
+                    </div>
+                </div>
+
+                <div class="glass-panel node-card">
+                    <div class="node-status">
+                        <span style="font-weight: 700;">Hospital Gamma</span>
+                        <div class="status-dot-active"></div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 2 • 942 Radiographs</p>
+                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-emerald);">
+                        Status: HONEST<br>Consensus Sim: +0.918
+                    </div>
+                </div>
+
+                <div class="glass-panel node-card">
+                    <div class="node-status">
+                        <span style="font-weight: 700;">Hospital Delta</span>
+                        <div class="status-dot-active"></div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 3 • 942 Radiographs</p>
+                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-emerald);">
+                        Status: HONEST<br>Consensus Sim: +0.931
+                    </div>
+                </div>
+
+                <div class="glass-panel node-card">
+                    <div class="node-status">
+                        <span style="font-weight: 700;">Hospital Epsilon</span>
+                        <div class="status-dot-active"></div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 4 • 942 Radiographs</p>
+                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-emerald);">
+                        Status: HONEST<br>Consensus Sim: +0.925
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let currentRawDataUri = "";
+        let currentHeatmapDataUri = "";
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        async function loadSample(type) {
+            const res = await fetch(`/api/samples/${type}`);
+            const blob = await res.blob();
+            const file = new File([blob], `${type}_sample.png`, { type: "image/png" });
+            uploadAndPredict(file);
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) uploadAndPredict(file);
+        }
+
+        // Drag & Drop
+        const dropzone = document.getElementById('dropzone');
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) uploadAndPredict(e.dataTransfer.files[0]);
+        });
+
+        async function uploadAndPredict(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentRawDataUri = e.target.result;
+                document.getElementById('mainImage').src = currentRawDataUri;
+                document.getElementById('mainImage').style.display = 'block';
+                document.getElementById('viewerPlaceholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+
+            // Send to FastAPI
+            const formData = new FormData();
+            formData.append('file', file);
+
+            document.getElementById('verdictTag').textContent = "ANALYZING...";
+            document.getElementById('verdictTag').className = "verdict-tag";
+
+            try {
+                const res = await fetch('/api/predict', { method: 'POST', body: formData });
+                const data = await res.json();
+
+                currentHeatmapDataUri = data.heatmap_overlay;
+                document.getElementById('overlayToggleBar').style.display = currentHeatmapDataUri ? 'flex' : 'none';
+                toggleOverlay('raw');
+
+                const isPneumonia = data.diagnosis === "PNEUMONIA";
+                const tag = document.getElementById('verdictTag');
+                tag.textContent = isPneumonia ? "PNEUMONIA DETECTED" : "NORMAL - CLEAR";
+                tag.className = isPneumonia ? "verdict-tag tag-pneumonia" : "verdict-tag tag-normal";
+
+                document.getElementById('confidenceValue').textContent = `${data.confidence_percentage}%`;
+                document.getElementById('confidenceValue').style.color = isPneumonia ? "var(--accent-rose)" : "var(--accent-emerald)";
+
+                const fill = document.getElementById('progressFill');
+                fill.className = isPneumonia ? "progress-bar-fill fill-pneumonia" : "progress-bar-fill fill-normal";
+                fill.style.width = `${data.confidence_percentage}%`;
+
+                document.getElementById('probNormalText').textContent = `Normal: ${data.probabilities.normal}%`;
+                document.getElementById('probPneumoniaText').textContent = `Pneumonia: ${data.probabilities.pneumonia}%`;
+                document.getElementById('clinicalBox').textContent = data.clinical_action;
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('clinicalBox').textContent = "Inference failed. Verify backend server is running.";
+            }
+        }
+
+        function toggleOverlay(type) {
+            document.getElementById('btnRaw').classList.toggle('active', type === 'raw');
+            document.getElementById('btnHeatmap').classList.toggle('active', type === 'heatmap');
+            document.getElementById('mainImage').src = (type === 'heatmap' && currentHeatmapDataUri) ? currentHeatmapDataUri : currentRawDataUri;
+        }
+
+        async function handlePoisonFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const declared = document.getElementById('declaredLabelSelect').value;
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('declared_label', declared);
+
+            const res = await fetch('/api/detect-poison', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            const box = document.getElementById('singlePoisonResult');
+            box.style.display = 'block';
+            box.innerHTML = `<strong>${data.verdict}</strong><br><br>
+            • Declared Label: ${data.declared_label}<br>
+            • Latent Model Prediction: ${data.model_prediction} (${data.prediction_confidence}% confidence)<br>
+            • Cross-Entropy Loss Residual: ${data.loss_residual} (Higher loss = stronger poisoning evidence)`;
+            box.style.borderLeftColor = data.is_poisoned ? 'var(--accent-rose)' : 'var(--accent-emerald)';
+        }
+
+        async function runPoisonBenchmark() {
+            document.getElementById('benchmarkLoading').style.display = 'block';
+            document.getElementById('benchmarkResults').style.display = 'none';
+
+            try {
+                const res = await fetch('/api/benchmark-poison');
+                const data = await res.json();
+
+                document.getElementById('benchmarkLoading').style.display = 'none';
+                document.getElementById('benchmarkResults').style.display = 'flex';
+
+                document.getElementById('statInspected').textContent = data.total_inspected;
+                document.getElementById('statPoisoned').textContent = data.poisoned_count;
+                document.getElementById('statAccuracy').textContent = `${data.detection_accuracy_percentage}%`;
+
+                const tbody = document.getElementById('flaggedTableBody');
+                tbody.innerHTML = '';
+                data.flagged_samples.forEach(s => {
+                    const row = `<tr>
+                        <td>#${s.sample_index}</td>
+                        <td style="color: var(--accent-rose);">${s.declared_label}</td>
+                        <td style="color: var(--accent-emerald); font-weight: 600;">${s.suspected_true_label}</td>
+                        <td>${s.model_confidence}%</td>
+                        <td><span style="color: var(--accent-rose); font-weight: 600;">REJECTED</span></td>
+                    </tr>`;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (err) {
+                console.error(err);
+                document.getElementById('benchmarkLoading').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

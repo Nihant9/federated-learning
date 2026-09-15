@@ -34,14 +34,15 @@ class FlowerClient(fl.client.NumPyClient):
         # Load global model parameters
         set_parameters(self.model, parameters)
 
-        # Local training
+        # Local training (2 epochs per round for robust convergence)
         train(
-    self.model,
-    self.train_loader,
-    self.device,
-    epochs=1,
-    malicious=self.malicious
-)
+            self.model,
+            self.train_loader,
+            self.device,
+            epochs=2,
+            lr=0.0004,
+            malicious=self.malicious
+        )
 
         # Return updated parameters
         return (
@@ -58,7 +59,7 @@ class FlowerClient(fl.client.NumPyClient):
         set_parameters(self.model, parameters)
 
         # Evaluate local model
-        loss, accuracy = test(
+        loss, accuracy, metrics = test(
             self.model,
             self.val_loader,
             self.device
@@ -67,5 +68,5 @@ class FlowerClient(fl.client.NumPyClient):
         return (
             float(loss),
             len(self.val_loader.dataset),
-            {"accuracy": float(accuracy)}
+            {"accuracy": float(accuracy), "sensitivity": float(metrics.get("sensitivity", 0.0))}
         )
