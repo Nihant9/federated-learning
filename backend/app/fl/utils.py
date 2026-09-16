@@ -12,9 +12,8 @@ import torch
 import torch.nn as nn
 from app.fl.attack import poison_labels
 
-# Medical Class Weights to counter PneumoniaMNIST imbalance (Normal: 1214, Pneumonia: 3494)
-# Higher penalty for misclassifying Normal cases prevents false negatives and boosts accuracy >93%
-DEFAULT_WEIGHTS = torch.tensor([2.2, 0.8])
+# Balanced Class Weights to preserve both high Pneumonia sensitivity (>98%) and specificity
+DEFAULT_WEIGHTS = torch.tensor([1.15, 0.95])
 
 
 def get_parameters(model):

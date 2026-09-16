@@ -157,7 +157,7 @@ async def predict(file: UploadFile = File(...)):
 
     p_normal = float(probabilities[0])
     p_pneumonia = float(probabilities[1])
-    predicted_idx = 1 if p_pneumonia >= 0.60 else 0
+    predicted_idx = 1 if p_pneumonia >= 0.50 else 0
 
     diagnosis = "PNEUMONIA" if predicted_idx == 1 else "NORMAL"
     confidence = p_pneumonia if predicted_idx == 1 else p_normal
