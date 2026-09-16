@@ -1,8 +1,18 @@
 {
     "version": "0.2.0",
+    "compounds": [
+        {
+            "name": "⚡ Launch Web Dashboard & Chrome Together",
+            "configurations": [
+                "🚀 1. Run Web Dashboard (Port 8000)",
+                "🌐 2. Open Interface in Google Chrome"
+            ],
+            "stopAll": true
+        }
+    ],
     "configurations": [
         {
-            "name": "🚀 1. Run Web Dashboard & API (Port 8000)",
+            "name": "🚀 1. Run Web Dashboard (Port 8000)",
             "type": "python",
             "request": "launch",
             "module": "uvicorn",
@@ -18,10 +28,22 @@
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/backend"
             },
+            "serverReadyAction": {
+                "pattern": "Application startup complete",
+                "uriFormat": "http://127.0.0.1:8000",
+                "action": "openExternally"
+            },
             "console": "integratedTerminal"
         },
         {
-            "name": "🛡️ 2. Run Federated Learning Simulation (FL Server)",
+            "name": "🌐 2. Open Interface in Google Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://127.0.0.1:8000",
+            "webRoot": "${workspaceFolder}/backend/app/static"
+        },
+        {
+            "name": "🛡️ 3. Run Federated Learning Simulation (FL Server)",
             "type": "python",
             "request": "launch",
             "module": "app.fl.server",
@@ -32,7 +54,7 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "📊 3. Train & Benchmark (Optimizer)",
+            "name": "📊 4. Train & Benchmark (Optimizer)",
             "type": "python",
             "request": "launch",
             "module": "app.fl.train_optimizer",

@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "🌐 Open Dashboard in Google Chrome",
+            "type": "shell",
+            "command": "cmd.exe /c start chrome http://127.0.0.1:8000",
+            "problemMatcher": []
+        }
+    ]
+}
