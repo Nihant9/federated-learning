@@ -898,9 +898,7 @@
                             </div>
                         </div>
 
-                        <div id="clinicalBox" class="clinical-box">
-                            Upload a chest X-ray image or click one of the clinical samples to initiate deep learning inference.
-                        </div>
+                        <div id="clinicalBox" class="clinical-box" style="display: none;"></div>
                     </div>
 
                     <!-- Clinical Advisory & Recovery Section -->
@@ -1149,6 +1147,8 @@
 
             tag.textContent = "VALIDATING & ANALYZING...";
             tag.className = "verdict-tag";
+            const clinicalBox = document.getElementById('clinicalBox');
+            clinicalBox.style.display = 'none';
 
             try {
                 const res = await fetch('/api/predict', { method: 'POST', body: formData });
@@ -1181,7 +1181,8 @@
                     document.getElementById('probPneumoniaText').textContent = `Pneumonia: ${data.probabilities.pneumonia}%`;
                 }
 
-                document.getElementById('clinicalBox').innerHTML = `<strong>Clinical Assessment:</strong><br>${data.clinical_action}`;
+                clinicalBox.style.display = 'block';
+                clinicalBox.innerHTML = `<strong>Clinical Assessment:</strong><br>${data.clinical_action}`;
 
                 // Populate Advisory Panel
                 const advisoryPanel = document.getElementById('clinicalAdvisoryPanel');
@@ -1219,7 +1220,8 @@
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('clinicalBox').textContent = "Inference failed. Verify backend server is running.";
+                clinicalBox.style.display = 'block';
+                clinicalBox.textContent = "Inference failed. Verify backend server is running.";
             }
         }
 
