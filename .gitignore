@@ -17,6 +17,7 @@ build/
 
 # PyTorch / MedMNIST data cache
 *.pt
+!backend/app/fl/chest_centroid.pt
 *.pth
 *.npz
 .medmnist/

@@ -3,14 +3,16 @@ app/routes/api.py
 
 FastAPI REST API endpoints for:
 1. Real-time Chest X-Ray Pneumonia Prediction with confidence and risk stratification.
-2. Dataset-level and image-level Poisoning & Tampering Detection.
-3. Federated Learning telemetry and sample test image serving.
+2. Multi-tier Radiograph Gatekeeper & Out-of-Distribution (OOD) Validator.
+3. Clinical Advisory Protocol with detailed precautions and what to avoid for rapid recovery.
+4. Dataset-level and image-level Poisoning & Tampering Detection.
+5. Federated Learning telemetry and sample test image serving.
 """
 
 import os
 import io
 import base64
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, File, UploadFile, HTTPException, Form
 from fastapi.responses import FileResponse, JSONResponse
 from PIL import Image
@@ -58,10 +60,10 @@ def get_sanitizer() -> DataSanitizer:
 
 
 def preprocess_image(pil_image: Image.Image) -> torch.Tensor:
-    """Preprocess any input image into normalized tensor (1, 1, 28, 28)."""
+    """Preprocess any input image into normalized tensor (1, 1, 64, 64)."""
     gray_image = pil_image.convert("L")
     transform = transforms.Compose([
-        transforms.Resize((28, 28)),
+        transforms.Resize((64, 64)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5], std=[0.5]),
     ])
@@ -69,7 +71,7 @@ def preprocess_image(pil_image: Image.Image) -> torch.Tensor:
 
 
 def generate_saliency_overlay(model: PneumoniaCNN, tensor: torch.Tensor, pil_img: Image.Image) -> str:
-    """Compute simple input gradient saliency map to highlight regions of interest."""
+    """Compute input gradient saliency map to highlight regions of interest (lung infiltrates)."""
     try:
         tensor_grad = tensor.clone().detach().requires_grad_(True)
         out = model(tensor_grad)
@@ -82,13 +84,13 @@ def generate_saliency_overlay(model: PneumoniaCNN, tensor: torch.Tensor, pil_img
         saliency_img = Image.fromarray((saliency_np * 255).astype(np.uint8), mode="L")
         saliency_resized = saliency_img.resize(pil_img.size, Image.BILINEAR)
 
-        # Create RGBA colored heatmap overlay (red on intense areas)
+        # Create RGBA colored heatmap overlay (warm rose on intense activation areas)
         sal_arr = np.array(saliency_resized)
         rgba = np.zeros((sal_arr.shape[0], sal_arr.shape[1], 4), dtype=np.uint8)
         rgba[..., 0] = sal_arr  # Red
-        rgba[..., 1] = (255 - sal_arr) // 3  # Green
-        rgba[..., 2] = 50  # Blue
-        rgba[..., 3] = (sal_arr * 0.6).astype(np.uint8)  # Alpha
+        rgba[..., 1] = (255 - sal_arr) // 4  # Green
+        rgba[..., 2] = 40  # Blue
+        rgba[..., 3] = (sal_arr * 0.65).astype(np.uint8)  # Alpha
 
         overlay = Image.fromarray(rgba, mode="RGBA")
         base_rgb = pil_img.convert("RGBA")
@@ -109,11 +111,12 @@ async def model_status():
     has_weights = os.path.exists(CHECKPOINT_PATH)
     return {
         "status": "ONLINE",
-        "model_architecture": "PneumoniaCNN (Dual ConvBlock, BatchNorm, AdaptivePool)",
-        "target_metric": ">= 93.5% Accuracy",
+        "model_architecture": "PneumoniaCNN (SE-ResNet with Channel Attention & Residual Connections)",
+        "target_metric": ">= 95.0% Accuracy",
         "checkpoint_exists": has_weights,
         "device": str(DEVICE),
         "byzantine_defense": "ACTIVE (DefendedFedAvg Cosine Anomaly Filter)",
+        "radiograph_gatekeeper": "ACTIVE (Multi-tier OOD & Chroma Validator)",
         "classes": ["Normal", "Pneumonia"],
     }
 
@@ -125,7 +128,6 @@ async def get_sample_image(category: str):
     filepath = os.path.join(SAMPLES_DIR, filename)
 
     if not os.path.exists(filepath):
-        # Create a synthetic fallback if not exported yet
         os.makedirs(SAMPLES_DIR, exist_ok=True)
         img = Image.new("L", (256, 256), color=120)
         img.save(filepath)
@@ -137,10 +139,12 @@ async def get_sample_image(category: str):
 async def predict(file: UploadFile = File(...)):
     """
     Run deep learning inference on an uploaded chest X-ray image.
-    Returns predicted diagnosis, probability scores, risk stratification, and saliency heatmap.
+    First runs the Radiograph Gatekeeper to reject non-medical/random photos.
+    Returns predicted diagnosis, probability scores, risk stratification, saliency heatmap,
+    and structured clinical recovery precautions and actions to avoid.
     """
     if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Uploaded file must be a valid image (PNG/JPEG).")
+        raise HTTPException(status_code=400, detail="Uploaded file must be a valid image (PNG/JPEG/DICOM).")
 
     contents = await file.read()
     try:
@@ -148,6 +152,41 @@ async def predict(file: UploadFile = File(...)):
     except Exception:
         raise HTTPException(status_code=400, detail="Could not decode image file.")
 
+    sanitizer = get_sanitizer()
+
+    # Step 1: Radiograph Gatekeeper & OOD Check
+    validation = sanitizer.validate_chest_xray(pil_img)
+    if not validation["is_valid"]:
+        return {
+            "status": "INVALID_IMAGE",
+            "is_valid_xray": False,
+            "diagnosis": "INVALID / NOT A CHEST X-RAY",
+            "confidence_percentage": 0.0,
+            "predicted_class_index": -1,
+            "probabilities": {"normal": 0.0, "pneumonia": 0.0},
+            "risk_level": "INVALID_INPUT",
+            "clinical_action": (
+                "REJECTED: The uploaded file is not a valid PA/AP Chest Radiograph. "
+                + " ".join(validation["reasons"])
+            ),
+            "precautions": [
+                "🩺 **Chest Radiographs Only**: This diagnostic system is calibrated exclusively for bilateral thoracic lung parenchyma analysis to detect Pneumonia.",
+                "📋 **Authentic PA/AP Projection**: Please upload an authentic Posteroanterior (PA) or Anteroposterior (AP) chest radiograph.",
+                "🔬 **Clear Imaging**: Ensure full view of both lung fields from apical rib spaces to costophrenic angles."
+            ],
+            "what_to_avoid": [
+                "🚫 **Do Not Upload Extremity Radiographs**: Leg, knee, ankle, foot, arm, wrist, and hand X-rays are not chest images and will be rejected.",
+                "🚫 **Do Not Upload Non-Thoracic Scans**: Isolated cardiac scans, echocardiograms, coronary angiograms, abdominal, dental, or skull scans are rejected.",
+                "🚫 **Avoid Non-Medical Photos**: Selfies, pets, outdoor scenes, documents, or screenshots cannot be processed."
+            ],
+            "emergency_red_flags": [
+                "⚠️ If you or the patient are experiencing respiratory distress, chest pain, or low oxygen levels (SpO2 < 92%), seek immediate emergency medical care."
+            ],
+            "tamper_analysis": {"tampered": False, "reasons": validation["reasons"]},
+            "heatmap_overlay": "",
+        }
+
+    # Step 2: Inference with SE-ResNet Model
     model = get_model()
     tensor = preprocess_image(pil_img)
 
@@ -162,14 +201,60 @@ async def predict(file: UploadFile = File(...)):
     diagnosis = "PNEUMONIA" if predicted_idx == 1 else "NORMAL"
     confidence = p_pneumonia if predicted_idx == 1 else p_normal
 
-    # Physical tampering check on image
-    sanitizer = get_sanitizer()
+    # Image tampering check
     tamper_result = sanitizer.inspect_single_image(pil_img)
 
     # Generate visual attention heatmap
     heatmap_data_uri = generate_saliency_overlay(model, tensor, pil_img)
 
+    # Step 3: Detailed Clinical Precautions & "What to Avoid" Guidance
+    if predicted_idx == 1:
+        clinical_action = (
+            "URGENT: Pulmonary infiltrates detected. Immediate clinician review, auscultation, "
+            "and pulse oximetry evaluation strongly recommended."
+        )
+        precautions = [
+            "🩺 **Physician Consultation**: Consult a pulmonologist or general physician promptly for stethoscope auscultation, blood tests (CBC, CRP), and clinical correlation.",
+            "💊 **Pharmaceutical Compliance**: Complete the full course of prescribed antibiotics or antivirals; never discontinue early even if symptoms improve.",
+            "📊 **SpO2 Oxygen Monitoring**: Check blood oxygen levels via pulse oximeter every 4 hours. Keep an updated record.",
+            "💧 **Aggressive Hydration**: Drink 2.5–3.0 liters of warm fluids (water, herbal tea, clear broths) daily to thin out lung mucus and assist expectoration.",
+            "🛏️ **Elevated Sleep Posture**: Sleep in a semi-Fowler's posture (torso elevated 30°–45° with extra pillows) to expand lung bases and ease breathing effort.",
+            "💨 **Steam Inhalation / Humidifier**: Use a warm mist humidifier or clean steam inhalation twice daily to soothe bronchial passages."
+        ]
+        what_to_avoid = [
+            "🚫 **Strictly No Smoking or Vaping**: Avoid active tobacco, e-cigarettes, and secondhand smoke exposure, which paralyzes protective lung cilia.",
+            "🚫 **Avoid Cold & Dry Air**: Stay away from direct blasts of cold air conditioning or drafty fans, which trigger bronchospasms.",
+            "🚫 **No Strenuous Exertion / Heavy Lifting**: Refrain from gym workouts, running, or rushing back to intense physical labor until full recovery.",
+            "🚫 **Do Not Suppress Productive Coughing with OTC Syrups**: Coughing is your body's vital reflex to expel infected mucus. Never take cough suppressants without direct physician approval.",
+            "🚫 **Never Self-Medicate with Leftover Antibiotics**: Inappropriate or incomplete antibiotic usage produces resistant bacterial strains and compromises gut health."
+        ]
+        emergency_red_flags = [
+            "⚠️ Cyanosis (bluish or grayish discoloration around lips, nail beds, or tongue)",
+            "⚠️ Persistent blood oxygen saturation (SpO2) falling below 92%",
+            "⚠️ Inability to breathe comfortably while resting, or confusion / extreme lethargy",
+            "⚠️ Coughing up significant amounts of fresh blood (hemoptysis)"
+        ]
+    else:
+        clinical_action = (
+            "CLEAR: Bilateral lung fields appear well-aerated without focal consolidation, pleural effusion, or acute infiltrate."
+        )
+        precautions = [
+            "🛡️ **Preventative Immunization**: Stay up to date with seasonal influenza and pneumococcal vaccines.",
+            "🏃 **Cardiorespiratory Wellness**: Maintain routine moderate physical activity and practice deep diaphragmatic breathing.",
+            "💧 **Daily Baseline Hydration**: Drink at least 2 liters of water daily to maintain optimal respiratory mucosal defenses.",
+            "🧼 **Respiratory Hygiene**: Practice frequent hand hygiene and avoid close contact with individuals experiencing acute respiratory infections."
+        ]
+        what_to_avoid = [
+            "🚫 **Avoid Tobacco and Environmental Pollutants**: Refrain from smoking or prolonged exposure to dusty or polluted air.",
+            "🚫 **Avoid Sudden Temperature Extremes**: Ensure adequate clothing during sudden seasonal cold shifts."
+        ]
+        emergency_red_flags = [
+            "⚠️ If you develop high fever, sudden shortness of breath, or sharp chest pain upon inhalation, consult a physician immediately."
+        ]
+
     return {
+        "status": "ANALYSIS_COMPLETE",
+        "is_valid_xray": True,
         "diagnosis": diagnosis,
         "confidence_percentage": round(confidence * 100, 2),
         "predicted_class_index": predicted_idx,
@@ -178,11 +263,10 @@ async def predict(file: UploadFile = File(...)):
             "pneumonia": round(p_pneumonia * 100, 2),
         },
         "risk_level": "HIGH_RISK" if predicted_idx == 1 else "LOW_RISK",
-        "clinical_action": (
-            "URGENT: Pulmonary infiltrates detected. Immediate clinician review, pulse oximetry, and antibiotics evaluation recommended."
-            if predicted_idx == 1
-            else "CLEAR: Clear lung fields without focal consolidation or pleural effusion. Routine monitoring."
-        ),
+        "clinical_action": clinical_action,
+        "precautions": precautions,
+        "what_to_avoid": what_to_avoid,
+        "emergency_red_flags": emergency_red_flags,
         "tamper_analysis": tamper_result,
         "heatmap_overlay": heatmap_data_uri,
     }
@@ -247,7 +331,6 @@ async def benchmark_poison_audit():
 
     _, test_dataset = load_datasets(image_size=28)
 
-    # Artificially flip labels on 20% of first 60 samples
     sample_data = []
     ground_truth_poisons = []
 
