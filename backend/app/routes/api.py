@@ -25,6 +25,7 @@ from app.fl.model import PneumoniaCNN
 from app.fl.utils import load_checkpoint
 from app.detection.data_sanitizer import DataSanitizer
 from app.data.loader import load_datasets
+from app.xai.explainer import XAIExplainer
 
 router = APIRouter(prefix="/api")
 
@@ -32,14 +33,15 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 CHECKPOINT_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "fl", "global_model.pth")
 SAMPLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "samples")
 
-# Global singleton model and sanitizer
+# Global singletons
 _model: Optional[PneumoniaCNN] = None
 _sanitizer: Optional[DataSanitizer] = None
+_xai: Optional[XAIExplainer] = None
 
 
 def get_model() -> PneumoniaCNN:
     """Load or retrieve global model instance."""
-    global _model, _sanitizer
+    global _model, _sanitizer, _xai
     if _model is None:
         _model = PneumoniaCNN().to(DEVICE)
         if os.path.exists(CHECKPOINT_PATH):
@@ -49,7 +51,16 @@ def get_model() -> PneumoniaCNN:
             print(f"Warning: Checkpoint not found at {CHECKPOINT_PATH}, using uninitialized weights.")
         _model.eval()
         _sanitizer = DataSanitizer(_model, device=DEVICE)
+        _xai = XAIExplainer(_model, device=DEVICE)
     return _model
+
+
+def get_xai() -> XAIExplainer:
+    """Load or retrieve global XAI explainer instance."""
+    global _xai
+    if _xai is None:
+        get_model()
+    return _xai
 
 
 def get_sanitizer() -> DataSanitizer:
@@ -351,3 +362,173 @@ async def benchmark_poison_audit():
     audit_report["detection_accuracy_percentage"] = 95.0
 
     return audit_report
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# XAI Endpoints
+# ─────────────────────────────────────────────────────────────────────────────
+
+@router.post("/xai/full")
+async def xai_full_explanation(file: UploadFile = File(...)):
+    """
+    Run ALL XAI methods (Grad-CAM, Integrated Gradients, Saliency, Occlusion,
+    SmoothGrad, Region Attribution) on an uploaded chest X-ray.
+    Returns a comprehensive unified explanation report with base64 overlay
+    images, numerical attribution grids, and anatomical region scores.
+    No static data — every result is computed live from the current model.
+    """
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Uploaded file must be a valid image.")
+
+    contents = await file.read()
+    try:
+        pil_img = Image.open(io.BytesIO(contents))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Could not decode image file.")
+
+    # Validate it is actually a chest X-ray
+    sanitizer = get_sanitizer()
+    validation = sanitizer.validate_chest_xray(pil_img)
+    if not validation["is_valid"]:
+        return {
+            "status": "INVALID_IMAGE",
+            "is_valid_xray": False,
+            "reason": " ".join(validation["reasons"]),
+        }
+
+    xai = get_xai()
+    try:
+        report = xai.full_explanation(pil_img)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"XAI computation failed: {exc}")
+
+    return report
+
+
+@router.post("/xai/grad-cam")
+async def xai_grad_cam(
+    file: UploadFile = File(...),
+    target_class: int = Form(-1),
+):
+    """
+    Compute Grad-CAM for a single uploaded image.
+    target_class: 0 = Normal, 1 = Pneumonia, -1 = auto (predicted class)
+    Returns overlay PNG (base64), 8×8 activation grid, and confidence score.
+    """
+    contents = await file.read()
+    try:
+        pil_img = Image.open(io.BytesIO(contents))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Could not decode image.")
+
+    xai = get_xai()
+    cls = None if target_class == -1 else target_class
+    try:
+        result = xai.grad_cam(pil_img, target_class=cls)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Grad-CAM failed: {exc}")
+    return result
+
+
+@router.post("/xai/saliency")
+async def xai_saliency(
+    file: UploadFile = File(...),
+    target_class: int = Form(-1),
+    method: str = Form("vanilla"),
+):
+    """
+    Compute saliency map for an uploaded image.
+    method: 'vanilla' (default) or 'smooth'
+    Returns hot-coloured overlay PNG (base64) and per-row importance scores.
+    """
+    contents = await file.read()
+    try:
+        pil_img = Image.open(io.BytesIO(contents))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Could not decode image.")
+
+    xai = get_xai()
+    cls = None if target_class == -1 else target_class
+    try:
+        if method == "smooth":
+            result = xai.smooth_grad(pil_img, target_class=cls)
+        else:
+            result = xai.vanilla_saliency(pil_img, target_class=cls)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Saliency computation failed: {exc}")
+    return result
+
+
+@router.post("/xai/integrated-gradients")
+async def xai_integrated_gradients(
+    file: UploadFile = File(...),
+    target_class: int = Form(-1),
+    n_steps: int = Form(50),
+):
+    """
+    Compute Integrated Gradients (Sundararajan et al., 2017) for an uploaded image.
+    Returns positive/negative attribution overlays (base64) and signed histogram.
+    n_steps: Riemann integration steps (default 50, max 100).
+    """
+    n_steps = min(max(n_steps, 10), 100)
+    contents = await file.read()
+    try:
+        pil_img = Image.open(io.BytesIO(contents))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Could not decode image.")
+
+    xai = get_xai()
+    cls = None if target_class == -1 else target_class
+    try:
+        result = xai.integrated_gradients(pil_img, target_class=cls, n_steps=n_steps)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Integrated Gradients failed: {exc}")
+    return result
+
+
+@router.post("/xai/occlusion")
+async def xai_occlusion(
+    file: UploadFile = File(...),
+    target_class: int = Form(-1),
+    patch_size: int = Form(8),
+):
+    """
+    Compute occlusion sensitivity (LIME-style) for an uploaded image.
+    patch_size: square patch dimension (default 8 px on 64×64 model input).
+    Returns importance heatmap overlay and 8×8 importance grid.
+    """
+    patch_size = min(max(patch_size, 4), 16)
+    contents = await file.read()
+    try:
+        pil_img = Image.open(io.BytesIO(contents))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Could not decode image.")
+
+    xai = get_xai()
+    cls = None if target_class == -1 else target_class
+    try:
+        result = xai.occlusion_sensitivity(pil_img, target_class=cls, patch_size=patch_size)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Occlusion sensitivity failed: {exc}")
+    return result
+
+
+@router.post("/xai/region-attribution")
+async def xai_region_attribution(file: UploadFile = File(...)):
+    """
+    Compute anatomical region attribution percentages using Grad-CAM.
+    Returns per-region (left lung, right lung, mediastinum, upper/lower zones)
+    importance scores as percentages derived live from the model.
+    """
+    contents = await file.read()
+    try:
+        pil_img = Image.open(io.BytesIO(contents))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Could not decode image.")
+
+    xai = get_xai()
+    try:
+        result = xai.region_attribution(pil_img)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Region attribution failed: {exc}")
+    return result
