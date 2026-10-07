@@ -3,7 +3,7 @@ app/fl/utils.py
 
 Shared utilities for Federated Learning: parameter manipulation,
 class-weighted training to counter ~1:3 class imbalance, evaluation metrics,
-and model checkpoint persistence.
+model checkpoint persistence, and early stopping.
 """
 
 from collections import OrderedDict
@@ -14,6 +14,85 @@ from app.fl.attack import poison_labels
 
 # Balanced Class Weights to preserve both high Pneumonia sensitivity (>98%) and specificity
 DEFAULT_WEIGHTS = torch.tensor([1.15, 0.95])
+
+
+class EarlyStopping:
+    """
+    Monitors a composite score derived from accuracy, sensitivity, and specificity.
+    Triggers when no improvement is seen for `patience` consecutive rounds.
+
+    The composite score weights clinical importance:
+        score = 0.4 * accuracy + 0.4 * sensitivity + 0.2 * specificity
+
+    Args:
+        patience  (int):   Number of rounds without improvement before stopping.
+        min_delta (float): Minimum change to qualify as an improvement.
+        verbose   (bool):  Print status messages each round.
+    """
+
+    def __init__(self, patience: int = 3, min_delta: float = 1e-4, verbose: bool = True):
+        self.patience = patience
+        self.min_delta = min_delta
+        self.verbose = verbose
+
+        self.best_score: float = -float("inf")
+        self.best_round: int = 0
+        self.rounds_without_improvement: int = 0
+        self.triggered: bool = False
+
+        # Per-metric history for diagnostics
+        self.history: list = []
+
+    def _composite_score(self, accuracy: float, sensitivity: float, specificity: float) -> float:
+        """Weighted composite of three metrics (higher = better)."""
+        return 0.4 * accuracy + 0.4 * sensitivity + 0.2 * specificity
+
+    def step(self, server_round: int, accuracy: float, sensitivity: float, specificity: float) -> bool:
+        """
+        Call once per federated round with the global evaluation metrics.
+
+        Returns:
+            True  → early stopping should be triggered (training should halt).
+            False → continue training.
+        """
+        score = self._composite_score(accuracy, sensitivity, specificity)
+        self.history.append({
+            "round": server_round,
+            "accuracy": accuracy,
+            "sensitivity": sensitivity,
+            "specificity": specificity,
+            "composite_score": score,
+        })
+
+        if score > self.best_score + self.min_delta:
+            if self.verbose:
+                print(
+                    f"   [EarlyStopping] Round {server_round}: score improved "
+                    f"{self.best_score:.4f} → {score:.4f}  "
+                    f"(acc={accuracy*100:.2f}%, sens={sensitivity*100:.1f}%, spec={specificity*100:.1f}%)"
+                )
+            self.best_score = score
+            self.best_round = server_round
+            self.rounds_without_improvement = 0
+        else:
+            self.rounds_without_improvement += 1
+            if self.verbose:
+                print(
+                    f"   [EarlyStopping] Round {server_round}: no improvement for "
+                    f"{self.rounds_without_improvement}/{self.patience} rounds "
+                    f"(score={score:.4f}, best={self.best_score:.4f})"
+                )
+
+        if self.rounds_without_improvement >= self.patience:
+            self.triggered = True
+            if self.verbose:
+                print(
+                    f"   [EarlyStopping] TRIGGERED after round {server_round}. "
+                    f"Best score {self.best_score:.4f} was at round {self.best_round}."
+                )
+            return True
+
+        return False
 
 
 def get_parameters(model):
