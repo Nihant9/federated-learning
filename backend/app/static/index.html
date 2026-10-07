@@ -1090,24 +1090,6 @@
                 </div>
                 <div class="brand-text">
                     <h1>MedShield AI</h1>
-                    <p>Federated Pneumonia Diagnostic Engine & Byzantine Poison Defense</p>
-                </div>
-            </div>
-            <div class="telemetry-badges">
-                <div class="badge badge-accent">
-                    <div class="badge-dot"></div>
-                    <span id="headerAccBadge">Test Accuracy: &gt;95.0%</span>
-                </div>
-                <div class="badge">
-                    <span style="color: var(--accent-emerald);">●</span>
-                    <span>OOD Gatekeeper: Active</span>
-                </div>
-                <div class="badge">
-                    <span style="color: var(--accent-primary);">●</span>
-                    <span>Byzantine Defense: Armed</span>
-                </div>
-                <div class="badge">
-                    <span>5 Hospital Nodes</span>
                 </div>
             </div>
         </div>
@@ -1123,14 +1105,6 @@
             <button class="tab-btn" onclick="switchTab('poison')">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 Dataset Poisoning &amp; Tamper Scanner
-            </button>
-            <button class="tab-btn" onclick="switchTab('network')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><circle cx="5" cy="19" r="2"/><line x1="7" y1="6.5" x2="10" y2="10.5"/><line x1="17" y1="6.5" x2="14" y2="10.5"/><line x1="7" y1="17.5" x2="10" y2="13.5"/><line x1="17" y1="17.5" x2="14" y2="13.5"/></svg>
-                Federated Hospital Network
-            </button>
-            <button class="tab-btn" onclick="switchTab('xai')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg>
-                Explainable AI (XAI)
             </button>
         </nav>
 
@@ -1336,202 +1310,12 @@
             </div>
         </section>
 
-        <!-- TAB 3: Network Monitor -->
-        <section id="tab-network" class="tab-content">
-            <div class="section-header" style="margin-bottom: 2rem;">
-                <h2>Federated Healthcare Consortium Nodes</h2>
-                <p>Real-time topology of 5 participating hospital clients with Byzantine consensus defenses.</p>
-            </div>
-
-            <div class="network-grid">
-                <div class="glass-panel node-card">
-                    <div class="node-status">
-                        <span style="font-weight: 700;">Hospital Alpha</span>
-                        <div class="status-dot-active"></div>
-                    </div>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 0 • 942 Radiographs</p>
-                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-emerald);">
-                        Status: HONEST<br>Consensus Sim: +0.942
-                    </div>
-                </div>
-
-                <div class="glass-panel node-card" style="border-color: rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.05);">
-                    <div class="node-status">
-                        <span style="font-weight: 700; color: var(--accent-rose);">Hospital Beta (Adversary)</span>
-                        <div class="status-dot-blocked"></div>
-                    </div>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 1 • Malicious Node</p>
-                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-rose);">
-                        Status: BLOCKED &amp; SLASHED<br>Consensus Sim: -0.814 (Poisoned)
-                    </div>
-                </div>
-
-                <div class="glass-panel node-card">
-                    <div class="node-status">
-                        <span style="font-weight: 700;">Hospital Gamma</span>
-                        <div class="status-dot-active"></div>
-                    </div>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 2 • 942 Radiographs</p>
-                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-emerald);">
-                        Status: HONEST<br>Consensus Sim: +0.918
-                    </div>
-                </div>
-
-                <div class="glass-panel node-card">
-                    <div class="node-status">
-                        <span style="font-weight: 700;">Hospital Delta</span>
-                        <div class="status-dot-active"></div>
-                    </div>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 3 • 942 Radiographs</p>
-                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-emerald);">
-                        Status: HONEST<br>Consensus Sim: +0.931
-                    </div>
-                </div>
-
-                <div class="glass-panel node-card">
-                    <div class="node-status">
-                        <span style="font-weight: 700;">Hospital Epsilon</span>
-                        <div class="status-dot-active"></div>
-                    </div>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Partition 4 • 942 Radiographs</p>
-                    <div style="font-size: 0.75rem; font-family: 'JetBrains Mono'; color: var(--accent-emerald);">
-                        Status: HONEST<br>Consensus Sim: +0.925
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
-
-    <!-- TAB 4: XAI Explainability Dashboard -->
-    <section id="tab-xai" class="tab-content" style="max-width:1400px;margin:0 auto;padding:0 1.5rem 3rem;">
-
-        <!-- Hero row: upload + live image preview -->
-        <div class="xai-hero">
-            <!-- Upload column -->
-            <div class="glass-panel xai-upload-card">
-                <div class="section-header">
-                    <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:4px;background:linear-gradient(135deg,#c4b5fd,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Explainable AI Dashboard</h2>
-                    <p style="font-size:0.82rem;color:var(--text-muted);">Upload a chest X-ray to run live, model-computed XAI explanations &mdash; Grad-CAM, Saliency, Integrated Gradients, Occlusion, and Region Attribution.</p>
-                </div>
-
-                <div id="xaiDropzone" class="dropzone" onclick="document.getElementById('xaiFileInput').click()" style="padding:1.5rem;border-color:rgba(139,92,246,0.3);">
-                    <input type="file" id="xaiFileInput" accept="image/*" style="display:none;" onchange="handleXaiFile(event)">
-                    <div class="dropzone-icon" style="background:rgba(139,92,246,0.12);color:#c4b5fd;">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3l1 9m5-9l-1 9M3 7h18M12 12v9m-3-3 3 3 3-3"/></svg>
-                    </div>
-                    <h3>Upload Radiograph for XAI</h3>
-                    <p>Drag &amp; drop or click to choose</p>
-                </div>
-
-                <!-- Quick-load samples -->
-                <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border-glass);">
-                    <div class="preset-title">Or load a verified sample:</div>
-                    <div class="sample-buttons">
-                        <button class="btn-sample" onclick="xaiLoadSample('normal')"><span style="color:var(--accent-emerald)">●</span> Normal Lung</button>
-                        <button class="btn-sample" onclick="xaiLoadSample('pneumonia')"><span style="color:var(--accent-rose)">●</span> Pneumonia Case</button>
-                    </div>
-                </div>
-
-                <!-- XAI mode selector -->
-                <div style="margin-top:1.25rem;">
-                    <div class="preset-title" style="margin-bottom:8px;">XAI analysis mode:</div>
-                    <div class="xai-method-selector">
-                        <button id="xaiModeAll" class="xai-method-btn active" onclick="setXaiMode('all')">🔬 Full Report (All Methods)</button>
-                        <button id="xaiModeGradcam" class="xai-method-btn" onclick="setXaiMode('gradcam')">🌡️ Grad-CAM Only</button>
-                        <button id="xaiModeSaliency" class="xai-method-btn" onclick="setXaiMode('saliency')">⚡ Saliency Only</button>
-                        <button id="xaiModeIG" class="xai-method-btn" onclick="setXaiMode('ig')">∫ Integrated Gradients</button>
-                        <button id="xaiModeOcc" class="xai-method-btn" onclick="setXaiMode('occ')">🔲 Occlusion Only</button>
-                    </div>
-                </div>
-
-                <button id="xaiBtnRun" class="xai-btn-primary" onclick="runXai()" disabled>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    Run Explainability Analysis
-                </button>
-
-                <div id="xaiStatus" style="margin-top:1rem;font-size:0.8rem;color:var(--text-muted);text-align:center;"></div>
-            </div>
-
-            <!-- Image comparison panel -->
-            <div class="glass-panel xai-results-panel">
-                <div class="section-header" style="margin-bottom:1rem;">
-                    <h2 style="font-size:1.1rem;font-weight:700;">Image Viewer</h2>
-                    <p style="font-size:0.8rem;color:var(--text-muted);">Compare raw radiograph with active explanation overlay.</p>
-                </div>
-
-                <div class="xai-image-compare">
-                    <div class="xai-img-box">
-                        <div class="xai-img-label">📷 Original Radiograph</div>
-                        <img id="xaiOrigImg" style="display:none;" alt="Original X-Ray">
-                        <div id="xaiOrigPlaceholder" class="xai-img-placeholder">Awaiting upload</div>
-                    </div>
-                    <div class="xai-img-box">
-                        <div class="xai-img-label" id="xaiOverlayLabel">🌡️ Explanation Overlay</div>
-                        <img id="xaiOverlayImg" style="display:none;" alt="XAI Overlay">
-                        <div id="xaiOverlayPlaceholder" class="xai-img-placeholder">Run analysis to see overlay</div>
-                    </div>
-                </div>
-
-                <!-- Prediction summary -->
-                <div id="xaiPredBar" class="xai-prediction-bar" style="display:none;">
-                    <div>
-                        <div id="xaiPredClassName" class="xai-pred-class">—</div>
-                        <div class="xai-pred-label">Model Prediction</div>
-                    </div>
-                    <div>
-                        <div style="font-family:'JetBrains Mono';font-size:1.3rem;font-weight:700;" id="xaiPredConf">—</div>
-                        <div class="xai-pred-label">Confidence</div>
-                    </div>
-                    <div class="xai-conf-bar-wrap">
-                        <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-muted);margin-bottom:4px;">
-                            <span id="xaiPNormal">Normal: —</span>
-                            <span id="xaiPPneumonia">Pneumonia: —</span>
-                        </div>
-                        <div class="xai-conf-bar-track">
-                            <div id="xaiConfBarFill" class="xai-conf-bar-fill" style="width:0%;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Overlay selector buttons -->
-                <div id="xaiOverlaySelector" style="display:none;margin-top:0.5rem;">
-                    <div class="preset-title" style="margin-bottom:6px;">Switch overlay:</div>
-                    <div id="xaiOverlayBtns" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- XAI method result cards -->
-        <div id="xaiCardsGrid" class="xai-cards-grid" style="display:none;"></div>
-
-        <!-- Loading skeleton -->
-        <div id="xaiLoadingSkeleton" style="display:none;">
-            <div class="xai-skeleton">
-                <div class="xai-skel-bar" style="width:60%;height:18px;"></div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
-                    <div style="display:flex;flex-direction:column;gap:8px;">
-                        <div class="xai-skel-bar" style="height:160px;border-radius:12px;"></div>
-                        <div class="xai-skel-bar" style="width:80%;"></div>
-                        <div class="xai-skel-bar" style="width:55%;"></div>
-                    </div>
-                    <div style="display:flex;flex-direction:column;gap:8px;">
-                        <div class="xai-skel-bar" style="height:160px;border-radius:12px;"></div>
-                        <div class="xai-skel-bar" style="width:70%;"></div>
-                        <div class="xai-skel-bar" style="width:50%;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </section>
 
     <script>
         // ─── State ───────────────────────────────────────────────────────────────
         let currentRawDataUri = "";
         let currentHeatmapDataUri = "";
-        let xaiCurrentFile = null;
-        let xaiMode = "all";
-        let xaiOverlays = {};  // method name → overlay data URI
 
         // ─── Tab Switching ───────────────────────────────────────────────────────
         function switchTab(tabId) {
@@ -1540,13 +1324,7 @@
             event.currentTarget.classList.add('active');
             const el = document.getElementById('tab-' + tabId);
             if (el) el.classList.add('active');
-            // XAI tab lives outside #tab-xai so handle separately
-            const xaiSec = document.getElementById('tab-xai');
-            if (xaiSec) xaiSec.style.display = (tabId === 'xai') ? 'block' : 'none';
         }
-
-        // Make XAI section start hidden
-        document.getElementById('tab-xai').style.display = 'none';
 
         // ─── Original Lab tab logic ──────────────────────────────────────────────
         async function loadSample(type) {
@@ -1613,6 +1391,9 @@
                     fill.style.width = "0%";
                     document.getElementById('probNormalText').textContent = "Normal: 0%";
                     document.getElementById('probPneumoniaText').textContent = "Pneumonia: 0%";
+                    clinicalBox.style.display = 'block';
+                    clinicalBox.innerHTML = `<strong>⚠️ Upload a valid chest X-ray image</strong><br>Please upload a PA or AP thoracic radiograph. Non-medical photos, selfies, or other scan types are not supported.`;
+                    document.getElementById('clinicalAdvisoryPanel').style.display = 'none';
                 } else {
                     tag.textContent = isPneumonia ? "PNEUMONIA DETECTED" : "NORMAL - CLEAR";
                     tag.className = isPneumonia ? "verdict-tag tag-pneumonia" : "verdict-tag tag-normal";
@@ -1622,42 +1403,42 @@
                     fill.style.width = `${data.confidence_percentage}%`;
                     document.getElementById('probNormalText').textContent = `Normal: ${data.probabilities.normal}%`;
                     document.getElementById('probPneumoniaText').textContent = `Pneumonia: ${data.probabilities.pneumonia}%`;
-                }
 
-                clinicalBox.style.display = 'block';
-                clinicalBox.innerHTML = `<strong>Clinical Assessment:</strong><br>${data.clinical_action}`;
+                    clinicalBox.style.display = 'block';
+                    clinicalBox.innerHTML = `<strong>Clinical Assessment:</strong><br>${data.clinical_action}`;
 
-                const advisoryPanel = document.getElementById('clinicalAdvisoryPanel');
-                advisoryPanel.style.display = 'flex';
+                    const advisoryPanel = document.getElementById('clinicalAdvisoryPanel');
+                    advisoryPanel.style.display = 'flex';
 
-                const precautionsList = document.getElementById('precautionsList');
-                precautionsList.innerHTML = '';
-                (data.precautions || []).forEach(p => {
-                    const li = document.createElement('li');
-                    li.innerHTML = p;
-                    precautionsList.appendChild(li);
-                });
-
-                const avoidList = document.getElementById('avoidList');
-                avoidList.innerHTML = '';
-                (data.what_to_avoid || []).forEach(a => {
-                    const li = document.createElement('li');
-                    li.innerHTML = a;
-                    avoidList.appendChild(li);
-                });
-
-                const redFlagsBanner = document.getElementById('redFlagsBanner');
-                const redFlagsList = document.getElementById('redFlagsList');
-                redFlagsList.innerHTML = '';
-                if (data.emergency_red_flags && data.emergency_red_flags.length > 0) {
-                    redFlagsBanner.style.display = 'block';
-                    data.emergency_red_flags.forEach(f => {
+                    const precautionsList = document.getElementById('precautionsList');
+                    precautionsList.innerHTML = '';
+                    (data.precautions || []).forEach(p => {
                         const li = document.createElement('li');
-                        li.innerHTML = f;
-                        redFlagsList.appendChild(li);
+                        li.innerHTML = p;
+                        precautionsList.appendChild(li);
                     });
-                } else {
-                    redFlagsBanner.style.display = 'none';
+
+                    const avoidList = document.getElementById('avoidList');
+                    avoidList.innerHTML = '';
+                    (data.what_to_avoid || []).forEach(a => {
+                        const li = document.createElement('li');
+                        li.innerHTML = a;
+                        avoidList.appendChild(li);
+                    });
+
+                    const redFlagsBanner = document.getElementById('redFlagsBanner');
+                    const redFlagsList = document.getElementById('redFlagsList');
+                    redFlagsList.innerHTML = '';
+                    if (data.emergency_red_flags && data.emergency_red_flags.length > 0) {
+                        redFlagsBanner.style.display = 'block';
+                        data.emergency_red_flags.forEach(f => {
+                            const li = document.createElement('li');
+                            li.innerHTML = f;
+                            redFlagsList.appendChild(li);
+                        });
+                    } else {
+                        redFlagsBanner.style.display = 'none';
+                    }
                 }
 
             } catch (err) {
@@ -1727,400 +1508,6 @@
             }
         }
 
-        // ════════════════════════════════════════════════════════════════════════
-        //  XAI DASHBOARD LOGIC
-        // ════════════════════════════════════════════════════════════════════════
-
-        function setXaiMode(mode) {
-            xaiMode = mode;
-            document.querySelectorAll('.xai-method-btn').forEach(b => b.classList.remove('active'));
-            const map = { all:'xaiModeAll', gradcam:'xaiModeGradcam', saliency:'xaiModeSaliency', ig:'xaiModeIG', occ:'xaiModeOcc' };
-            document.getElementById(map[mode]).classList.add('active');
-        }
-
-        // XAI Drag & Drop
-        const xaiDZ = document.getElementById('xaiDropzone');
-        xaiDZ.addEventListener('dragover', e => { e.preventDefault(); xaiDZ.classList.add('dragover'); });
-        xaiDZ.addEventListener('dragleave', () => xaiDZ.classList.remove('dragover'));
-        xaiDZ.addEventListener('drop', e => {
-            e.preventDefault(); xaiDZ.classList.remove('dragover');
-            if (e.dataTransfer.files[0]) prepareXaiFile(e.dataTransfer.files[0]);
-        });
-
-        function handleXaiFile(e) {
-            if (e.target.files[0]) prepareXaiFile(e.target.files[0]);
-        }
-
-        function prepareXaiFile(file) {
-            xaiCurrentFile = file;
-            document.getElementById('xaiBtnRun').disabled = false;
-            document.getElementById('xaiStatus').textContent = `📂 Ready: ${file.name}`;
-            // Show original image immediately
-            const reader = new FileReader();
-            reader.onload = ev => {
-                const img = document.getElementById('xaiOrigImg');
-                img.src = ev.target.result;
-                img.style.display = 'block';
-                document.getElementById('xaiOrigPlaceholder').style.display = 'none';
-            };
-            reader.readAsDataURL(file);
-            // Reset results
-            document.getElementById('xaiCardsGrid').style.display = 'none';
-            document.getElementById('xaiCardsGrid').innerHTML = '';
-            document.getElementById('xaiPredBar').style.display = 'none';
-            document.getElementById('xaiOverlaySelector').style.display = 'none';
-            xaiOverlays = {};
-        }
-
-        async function xaiLoadSample(type) {
-            const res = await fetch(`/api/samples/${type}`);
-            const blob = await res.blob();
-            const file = new File([blob], `${type}_sample.png`, { type: 'image/png' });
-            prepareXaiFile(file);
-        }
-
-        async function runXai() {
-            if (!xaiCurrentFile) return;
-
-            const btn = document.getElementById('xaiBtnRun');
-            btn.disabled = true;
-            btn.innerHTML = `<div class="spinner"></div> Computing XAI...`;
-            document.getElementById('xaiStatus').textContent = '⏳ Running model explanations...';
-            document.getElementById('xaiLoadingSkeleton').style.display = 'block';
-            document.getElementById('xaiCardsGrid').style.display = 'none';
-            document.getElementById('xaiCardsGrid').innerHTML = '';
-            document.getElementById('xaiPredBar').style.display = 'none';
-            document.getElementById('xaiOverlaySelector').style.display = 'none';
-            xaiOverlays = {};
-
-            try {
-                let data;
-                if (xaiMode === 'all') {
-                    data = await xaiFetchFull(xaiCurrentFile);
-                } else if (xaiMode === 'gradcam') {
-                    const r = await xaiFetchEndpoint('/api/xai/grad-cam', xaiCurrentFile);
-                    data = { status:'XAI_COMPLETE', prediction:{ class_name: r.target_class_name, confidence: r.confidence, p_normal: r.target_class===0? r.confidence: 100-r.confidence, p_pneumonia: r.target_class===1? r.confidence: 100-r.confidence }, grad_cam: r };
-                } else if (xaiMode === 'saliency') {
-                    const r = await xaiFetchEndpoint('/api/xai/saliency', xaiCurrentFile);
-                    data = { status:'XAI_COMPLETE', prediction:{ class_name: r.target_class_name, confidence: r.confidence, p_normal: r.target_class===0? r.confidence: 100-r.confidence, p_pneumonia: r.target_class===1? r.confidence: 100-r.confidence }, vanilla_saliency: r };
-                } else if (xaiMode === 'ig') {
-                    const r = await xaiFetchEndpoint('/api/xai/integrated-gradients', xaiCurrentFile);
-                    data = { status:'XAI_COMPLETE', prediction:{ class_name: r.target_class_name, confidence: r.confidence, p_normal: r.target_class===0? r.confidence: 100-r.confidence, p_pneumonia: r.target_class===1? r.confidence: 100-r.confidence }, integrated_gradients: r };
-                } else if (xaiMode === 'occ') {
-                    const r = await xaiFetchEndpoint('/api/xai/occlusion', xaiCurrentFile);
-                    data = { status:'XAI_COMPLETE', prediction:{ class_name: r.target_class_name, confidence: r.baseline_confidence, p_normal: r.target_class===0? r.baseline_confidence: 100-r.baseline_confidence, p_pneumonia: r.target_class===1? r.baseline_confidence: 100-r.baseline_confidence }, occlusion_sensitivity: r };
-                }
-
-                if (!data || data.status === 'INVALID_IMAGE') {
-                    document.getElementById('xaiStatus').textContent = '⚠️ ' + (data?.reason || 'Invalid chest X-ray. Please upload a valid PA/AP radiograph.');
-                    document.getElementById('xaiLoadingSkeleton').style.display = 'none';
-                    btn.disabled = false;
-                    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Explainability Analysis`;
-                    return;
-                }
-
-                document.getElementById('xaiLoadingSkeleton').style.display = 'none';
-                renderXaiResults(data);
-                document.getElementById('xaiStatus').textContent = '✅ XAI analysis complete.';
-
-            } catch (err) {
-                console.error(err);
-                document.getElementById('xaiStatus').textContent = '❌ Analysis failed. Ensure the backend server is running.';
-                document.getElementById('xaiLoadingSkeleton').style.display = 'none';
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Explainability Analysis`;
-        }
-
-        async function xaiFetchFull(file) {
-            const fd = new FormData();
-            fd.append('file', file);
-            const res = await fetch('/api/xai/full', { method: 'POST', body: fd });
-            return res.json();
-        }
-
-        async function xaiFetchEndpoint(url, file, extras = {}) {
-            const fd = new FormData();
-            fd.append('file', file);
-            for (const [k,v] of Object.entries(extras)) fd.append(k, v);
-            const res = await fetch(url, { method: 'POST', body: fd });
-            return res.json();
-        }
-
-        // ─── Render XAI results ────────────────────────────────────────────────
-        function renderXaiResults(data) {
-            const pred = data.prediction;
-            const isPneumonia = pred.class_name === 'Pneumonia';
-
-            // Update prediction bar
-            const bar = document.getElementById('xaiPredBar');
-            bar.style.display = 'flex';
-            const cn = document.getElementById('xaiPredClassName');
-            cn.textContent = pred.class_name.toUpperCase();
-            cn.style.color = isPneumonia ? 'var(--accent-rose)' : 'var(--accent-emerald)';
-            document.getElementById('xaiPredConf').textContent = `${pred.confidence}%`;
-            document.getElementById('xaiPNormal').textContent = `Normal: ${pred.p_normal}%`;
-            document.getElementById('xaiPPneumonia').textContent = `Pneumonia: ${pred.p_pneumonia}%`;
-            const fill = document.getElementById('xaiConfBarFill');
-            fill.style.width = `${pred.p_pneumonia}%`;
-            fill.className = `xai-conf-bar-fill ${isPneumonia ? 'xai-conf-pneumonia' : 'xai-conf-normal'}`;
-
-            const grid = document.getElementById('xaiCardsGrid');
-            grid.innerHTML = '';
-            grid.style.display = 'grid';
-
-            const overlayBtns = [];
-
-            // ── Grad-CAM card ──
-            if (data.grad_cam) {
-                const gc = data.grad_cam;
-                xaiOverlays['Grad-CAM'] = gc.overlay_uri;
-                overlayBtns.push({ label: '🌡️ Grad-CAM', key: 'Grad-CAM' });
-
-                grid.insertAdjacentHTML('beforeend', `
-                <div class="xai-card">
-                    <div class="xai-card-title">
-                        <span style="color:#c4b5fd;">🌡️</span> Grad-CAM
-                        <span class="xai-badge xai-badge-violet">Gradient Weighted Activation</span>
-                    </div>
-                    <img src="${gc.overlay_uri}" alt="Grad-CAM overlay">
-                    <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;">
-                        Class: <strong style="color:${gc.target_class_name==='Pneumonia'?'var(--accent-rose)':'var(--accent-emerald)'}">${gc.target_class_name}</strong>
-                        &nbsp;|&nbsp; Confidence: <strong style="color:var(--text-main);font-family:'JetBrains Mono';">${gc.confidence}%</strong>
-                    </div>
-                    <div>
-                        <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:6px;">8×8 Activation Grid</div>
-                        ${renderHeatmapGrid(gc.cam_grid, 8)}
-                    </div>
-                    <p style="font-size:0.73rem;color:var(--text-muted);">Grad-CAM weights the gradients of the target class score with respect to the final convolutional feature maps to highlight discriminative lung regions.</p>
-                </div>`);
-            }
-
-            // ── Vanilla Saliency card ──
-            if (data.vanilla_saliency) {
-                const sal = data.vanilla_saliency;
-                xaiOverlays['Saliency'] = sal.overlay_uri;
-                overlayBtns.push({ label: '⚡ Saliency', key: 'Saliency' });
-
-                grid.insertAdjacentHTML('beforeend', `
-                <div class="xai-card">
-                    <div class="xai-card-title">
-                        <span style="color:var(--accent-amber);">⚡</span> Input Gradient Saliency
-                        <span class="xai-badge xai-badge-amber">|∂L/∂X|</span>
-                    </div>
-                    <img src="${sal.overlay_uri}" alt="Saliency overlay">
-                    <div style="font-size:0.78rem;color:var(--text-muted);">
-                        Class: <strong style="color:${sal.target_class_name==='Pneumonia'?'var(--accent-rose)':'var(--accent-emerald)'}">${sal.target_class_name}</strong>
-                        &nbsp;|&nbsp; Confidence: <strong style="color:var(--text-main);font-family:'JetBrains Mono';">${sal.confidence}%</strong>
-                    </div>
-                    <div>
-                        <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:6px;">Per-Row Gradient Magnitude</div>
-                        ${renderRowBarchart(sal.row_importance)}
-                    </div>
-                    <p style="font-size:0.73rem;color:var(--text-muted);">Measures the absolute gradient of the class score with respect to each input pixel — pixels that most influence the model output glow brightest.</p>
-                </div>`);
-            }
-
-            // ── Integrated Gradients card ──
-            if (data.integrated_gradients) {
-                const ig = data.integrated_gradients;
-                xaiOverlays['Integ. Gradients'] = ig.overlay_uri;
-                overlayBtns.push({ label: '∫ Integ. Grad', key: 'Integ. Gradients' });
-
-                grid.insertAdjacentHTML('beforeend', `
-                <div class="xai-card">
-                    <div class="xai-card-title">
-                        <span style="color:var(--accent-primary);">∫</span> Integrated Gradients
-                        <span class="xai-badge xai-badge-sky">Sundararajan 2017</span>
-                    </div>
-                    <div class="xai-ig-split">
-                        <div class="xai-ig-half">
-                            <div class="xai-ig-label">✅ Positive Attribution (Supporting)</div>
-                            <img src="${ig.raw_positive_uri}" alt="Positive attribution">
-                        </div>
-                        <div class="xai-ig-half">
-                            <div class="xai-ig-label">❌ Negative Attribution (Opposing)</div>
-                            <img src="${ig.raw_negative_uri}" alt="Negative attribution">
-                        </div>
-                    </div>
-                    <div style="font-size:0.78rem;color:var(--text-muted);">
-                        Confidence: <strong style="font-family:'JetBrains Mono';color:var(--text-main);">${ig.confidence}%</strong>
-                        &nbsp;|&nbsp; IG Steps: <strong>${ig.n_steps}</strong>
-                        &nbsp;|&nbsp; Σ⁺: <strong style="color:var(--accent-emerald);">${ig.total_positive_attribution}</strong>
-                        &nbsp;|&nbsp; Σ⁻: <strong style="color:var(--accent-rose);">${ig.total_negative_attribution}</strong>
-                    </div>
-                    <div>
-                        <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:6px;">Attribution Distribution Histogram</div>
-                        ${renderHistogram(ig.histogram)}
-                    </div>
-                    <p style="font-size:0.73rem;color:var(--text-muted);">Integrates gradients along a straight-line path from a black baseline to the input image using Riemann approximation (${ig.n_steps} steps). Satisfies completeness axiom — attributions sum to model output difference.</p>
-                </div>`);
-            }
-
-            // ── Occlusion Sensitivity card ──
-            if (data.occlusion_sensitivity) {
-                const occ = data.occlusion_sensitivity;
-                xaiOverlays['Occlusion'] = occ.overlay_uri;
-                overlayBtns.push({ label: '🔲 Occlusion', key: 'Occlusion' });
-
-                grid.insertAdjacentHTML('beforeend', `
-                <div class="xai-card">
-                    <div class="xai-card-title">
-                        <span style="color:var(--accent-rose);">🔲</span> Occlusion Sensitivity
-                        <span class="xai-badge xai-badge-rose">LIME-style Masking</span>
-                    </div>
-                    <img src="${occ.overlay_uri}" alt="Occlusion overlay">
-                    <div style="font-size:0.78rem;color:var(--text-muted);">
-                        Baseline Conf: <strong style="font-family:'JetBrains Mono';">${occ.baseline_confidence}%</strong>
-                        &nbsp;|&nbsp; Max Conf Drop: <strong style="color:var(--accent-rose);">${occ.max_drop}%</strong>
-                        &nbsp;|&nbsp; Patch: ${occ.patch_size}px
-                    </div>
-                    <div>
-                        <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:6px;">8×8 Importance Grid (confidence drop per region)</div>
-                        ${renderHeatmapGrid(occ.importance_grid, 8)}
-                    </div>
-                    <p style="font-size:0.73rem;color:var(--text-muted);">Systematically occludes ${occ.patch_size}×${occ.patch_size}px patches with neutral gray and measures confidence drop — regions with the largest drop are most important to the prediction.</p>
-                </div>`);
-            }
-
-            // ── SmoothGrad card ──
-            if (data.smooth_grad) {
-                const sg = data.smooth_grad;
-                xaiOverlays['SmoothGrad'] = sg.overlay_uri;
-                overlayBtns.push({ label: '〜 SmoothGrad', key: 'SmoothGrad' });
-
-                grid.insertAdjacentHTML('beforeend', `
-                <div class="xai-card">
-                    <div class="xai-card-title">
-                        <span style="color:var(--accent-emerald);">〜</span> SmoothGrad
-                        <span class="xai-badge xai-badge-emerald">Noise-Averaged Saliency</span>
-                    </div>
-                    <img src="${sg.overlay_uri}" alt="SmoothGrad overlay">
-                    <div style="font-size:0.78rem;color:var(--text-muted);">
-                        Confidence: <strong style="font-family:'JetBrains Mono';color:var(--text-main);">${sg.confidence}%</strong>
-                        &nbsp;|&nbsp; Samples: <strong>${sg.n_samples}</strong>
-                        &nbsp;|&nbsp; Noise σ: <strong>${sg.noise_level}</strong>
-                    </div>
-                    <p style="font-size:0.73rem;color:var(--text-muted);">Averages saliency maps over ${sg.n_samples} randomly noised copies of the input (σ=${sg.noise_level}×input range) to suppress gradient noise and produce sharper, more reliable attribution maps.</p>
-                </div>`);
-            }
-
-            // ── Region Attribution card ──
-            if (data.region_attribution) {
-                const ra = data.region_attribution;
-                xaiOverlays['Regions'] = ra.overlay_uri;
-                overlayBtns.push({ label: '🫁 Regions', key: 'Regions' });
-
-                const regionColors = {
-                    left_lung:   '#38bdf8',
-                    right_lung:  '#10b981',
-                    mediastinum: '#8b5cf6',
-                    upper_zone:  '#f59e0b',
-                    lower_zone:  '#f43f5e',
-                };
-                const regionLabels = {
-                    left_lung:   'Left Lung',
-                    right_lung:  'Right Lung',
-                    mediastinum: 'Mediastinum',
-                    upper_zone:  'Upper Zone',
-                    lower_zone:  'Lower Zone',
-                };
-
-                let regionRows = Object.entries(ra.region_scores).map(([k, v]) => `
-                    <div class="xai-region-row">
-                        <span class="xai-region-label">${regionLabels[k] || k}</span>
-                        <div class="xai-region-track">
-                            <div class="xai-region-fill" style="width:${v}%;background:${regionColors[k] || '#fff'};"></div>
-                        </div>
-                        <span class="xai-region-pct">${v}%</span>
-                    </div>`).join('');
-
-                grid.insertAdjacentHTML('beforeend', `
-                <div class="xai-card">
-                    <div class="xai-card-title">
-                        <span>🫁</span> Anatomical Region Attribution
-                        <span class="xai-badge xai-badge-emerald">Grad-CAM Regions</span>
-                    </div>
-                    <div class="xai-dominant-banner">
-                        🎯 <strong>Primary Focus:</strong> ${ra.dominant_region_label}
-                        &nbsp;— <span style="color:var(--text-muted);font-size:0.78rem;">Class: ${ra.target_class_name} @ ${ra.confidence}%</span>
-                    </div>
-                    <div class="xai-region-grid">${regionRows}</div>
-                    <p style="font-size:0.73rem;color:var(--text-muted);">Partitions the Grad-CAM activation map into five thoracic anatomical zones and reports the mean activation percentage per region — directly attributing model focus to lung anatomy.</p>
-                </div>`);
-            }
-
-            // Populate overlay switcher
-            const overlayBtnContainer = document.getElementById('xaiOverlayBtns');
-            overlayBtnContainer.innerHTML = '';
-            if (overlayBtns.length > 0) {
-                document.getElementById('xaiOverlaySelector').style.display = 'block';
-                overlayBtns.forEach(({ label, key }, i) => {
-                    const b = document.createElement('button');
-                    b.className = 'btn-sample' + (i === 0 ? ' xai-method-btn active' : '');
-                    b.textContent = label;
-                    b.style.fontSize = '0.75rem';
-                    b.onclick = () => {
-                        overlayBtnContainer.querySelectorAll('button').forEach(x => x.classList.remove('active', 'xai-method-btn'));
-                        b.classList.add('active', 'xai-method-btn');
-                        const overlayImg = document.getElementById('xaiOverlayImg');
-                        overlayImg.src = xaiOverlays[key];
-                        overlayImg.style.display = 'block';
-                        document.getElementById('xaiOverlayPlaceholder').style.display = 'none';
-                        document.getElementById('xaiOverlayLabel').textContent = `${label} Overlay`;
-                    };
-                    overlayBtnContainer.appendChild(b);
-                });
-                // Auto-show first overlay
-                overlayBtnContainer.querySelector('button')?.click();
-            }
-        }
-
-        // ─── Chart rendering helpers (pure DOM, no libraries) ────────────────
-        function renderHeatmapGrid(grid, n) {
-            const maxVal = Math.max(...grid.flat());
-            const minVal = Math.min(...grid.flat());
-            let cells = '';
-            for (let row of grid) {
-                for (let val of row) {
-                    const norm = (val - minVal) / (maxVal - minVal + 1e-8);
-                    const r = Math.round(255 * Math.min(1.5 - Math.abs(norm*4 - 3), 1));
-                    const g = Math.round(255 * Math.min(1.5 - Math.abs(norm*4 - 2), 1));
-                    const b = Math.round(255 * Math.min(1.5 - Math.abs(norm*4 - 1), 1));
-                    cells += `<div class="xai-heatmap-cell" style="background:rgb(${r},${g},${b});" title="${val.toFixed(3)}"></div>`;
-                }
-            }
-            return `<div class="xai-heatmap-grid" style="grid-template-columns:repeat(${n},1fr);">${cells}</div>`;
-        }
-
-        function renderRowBarchart(rowImportance) {
-            const maxVal = Math.max(...rowImportance);
-            const rows = rowImportance.map((v, i) => {
-                const pct = maxVal > 0 ? (v / maxVal * 100).toFixed(1) : 0;
-                const hue = 30 + (1 - v/maxVal) * 120;
-                return `<div class="xai-bar-row">
-                    <span style="width:22px;text-align:right;">${i+1}</span>
-                    <div class="xai-bar-track"><div class="xai-bar-fill" style="width:${pct}%;background:hsl(${hue},85%,60%);"></div></div>
-                    <span style="width:36px;">${parseFloat(v).toFixed(3)}</span>
-                </div>`;
-            }).join('');
-            return `<div class="xai-bar-chart">${rows}</div>`;
-        }
-
-        function renderHistogram(histogram) {
-            const maxCount = Math.max(...histogram.map(h => h.count));
-            const bars = histogram.map(h => {
-                const heightPct = maxCount > 0 ? (h.count / maxCount * 100) : 0;
-                const color = h.bin < 0 ? '#818cf8' : '#f43f5e';
-                return `<div class="xai-hist-bar" style="height:${heightPct}%;background:${color};" title="bin:${h.bin} count:${h.count}"></div>`;
-            }).join('');
-            return `<div class="xai-histogram">${bars}</div>
-                    <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-dim);margin-top:3px;">
-                        <span style="color:#818cf8;">← Negative</span>
-                        <span style="color:#f43f5e;">Positive →</span>
-                    </div>`;
-        }
-    </script>
+        </script>
 </body>
 </html>

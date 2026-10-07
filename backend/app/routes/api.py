@@ -176,23 +176,10 @@ async def predict(file: UploadFile = File(...)):
             "predicted_class_index": -1,
             "probabilities": {"normal": 0.0, "pneumonia": 0.0},
             "risk_level": "INVALID_INPUT",
-            "clinical_action": (
-                "REJECTED: The uploaded file is not a valid PA/AP Chest Radiograph. "
-                + " ".join(validation["reasons"])
-            ),
-            "precautions": [
-                "🩺 **Chest Radiographs Only**: This diagnostic system is calibrated exclusively for bilateral thoracic lung parenchyma analysis to detect Pneumonia.",
-                "📋 **Authentic PA/AP Projection**: Please upload an authentic Posteroanterior (PA) or Anteroposterior (AP) chest radiograph.",
-                "🔬 **Clear Imaging**: Ensure full view of both lung fields from apical rib spaces to costophrenic angles."
-            ],
-            "what_to_avoid": [
-                "🚫 **Do Not Upload Extremity Radiographs**: Leg, knee, ankle, foot, arm, wrist, and hand X-rays are not chest images and will be rejected.",
-                "🚫 **Do Not Upload Non-Thoracic Scans**: Isolated cardiac scans, echocardiograms, coronary angiograms, abdominal, dental, or skull scans are rejected.",
-                "🚫 **Avoid Non-Medical Photos**: Selfies, pets, outdoor scenes, documents, or screenshots cannot be processed."
-            ],
-            "emergency_red_flags": [
-                "⚠️ If you or the patient are experiencing respiratory distress, chest pain, or low oxygen levels (SpO2 < 92%), seek immediate emergency medical care."
-            ],
+            "clinical_action": "Please upload a valid chest X-ray image (PA or AP thoracic radiograph).",
+            "precautions": [],
+            "what_to_avoid": [],
+            "emergency_red_flags": [],
             "tamper_analysis": {"tampered": False, "reasons": validation["reasons"]},
             "heatmap_overlay": "",
         }
